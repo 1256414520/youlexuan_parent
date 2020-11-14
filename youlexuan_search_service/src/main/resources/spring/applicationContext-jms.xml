@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="com.offcn.search"/>
+
+
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.188.142:61616"/>
+    </bean>
+    <bean id="singleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+    </bean>
+
+    <!-- 配置当运营管理系统，点击商品审核通过的时候，要发送消息的队列-->
+    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="youlexuan_queue_solr"/>
+    </bean>
+
+    <!-- 配置接收删除搜索引擎数据的消息-->
+    <bean id="solrDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="youlexuan_queue_solr_delete"/>
+    </bean>
+
+    <!-- 配置消息监听容器,新增-->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+        <property name="destination" ref="queue"/>
+        <property name="messageListener" ref="reciveMessageListener001"/>
+    </bean>
+
+    <!-- 配置消息监听容器,删除-->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+        <property name="destination" ref="solrDeleteQueue"/>
+        <property name="messageListener" ref="reciveMessageListenerSolrDelete"/>
+    </bean>
+</beans>

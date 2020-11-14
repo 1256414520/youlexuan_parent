@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    <dubbo:application name="youlexuan_order_service">
+        <dubbo:parameter key="qos.enable" value="false"/>
+    </dubbo:application>
+
+    <!-- 配置广告服务对外调用端口-->
+    <dubbo:protocol name="dubbo" port="20886"/>
+<dubbo:registry address="zookeeper://192.168.188.142:2181"/>
+
+<dubbo:annotation package="com.offcn.order.service.impl"/>
+
+
+    <!-- 配置IdWorker序列号生成器-->
+    <bean id="idWorker" class="com.offcn.utils.IdWorker">
+        <!-- 数据中心编号北京机房-->
+        <constructor-arg index="1" value="1"/>
+        <!--应用进程编号 -->
+        <constructor-arg index="0" value="1"/>
+    </bean>
+</beans>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://192.168.188.142:61616"/>
+    </bean>
+    <bean id="singleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+    </bean>
+
+    <!-- 配置当运营管理系统，点击商品审核通过的时候，要发送消息的队列-->
+    <bean id="queue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="youlexuan_queue_solr"/>
+    </bean>
+
+    <!-- 创建队列，传递当商品删除的时候，传递删除商品数据-->
+    <bean id="solrDeleteQueue" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="youlexuan_queue_solr_delete"/>
+    </bean>
+
+    <!-- 创建一个主题，传递商品审核通过后，进行静态页面生成 消息传递-->
+    <bean id="topicPageDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="youlexuan_topic_page"/>
+    </bean>
+
+    <!-- 创建一个接收删除商品编号主题,当用户点击删除按钮后，进行消息传递-->
+    <bean id="topicPageDeleteDestination" class="org.apache.activemq.command.ActiveMQTopic">
+        <constructor-arg value="youlexuan_topic_page_delete"/>
+    </bean>
+</beans>

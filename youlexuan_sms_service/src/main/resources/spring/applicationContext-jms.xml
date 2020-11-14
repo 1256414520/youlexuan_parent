@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath*:properties/*.properties"/>
+    <!-- 扫描组件注解-->
+    <context:component-scan base-package="com.offcn"/>
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.broker-url}"/>
+    </bean>
+
+    <bean id="singleConnectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
+    </bean>
+
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+    </bean>
+    <!-- 指定要监听的消息队列-->
+    <bean id="smsSendDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="youlexuan_sms_send"/>
+    </bean>
+
+    <!-- 配置消息监听容器-->
+    <bean class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <property name="connectionFactory" ref="singleConnectionFactory"/>
+        <property name="destination" ref="smsSendDestination"/>
+        <property name="messageListener" ref="smsSendListener"/>
+    </bean>
+</beans>

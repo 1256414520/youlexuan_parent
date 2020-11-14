@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--<dubbo:application name="youlexuan_page_service">
+        <dubbo:parameter key="qos.enable" value="false"/>
+    </dubbo:application>
+
+    &lt;!&ndash; 配置广告服务对外调用端口&ndash;&gt;
+    <dubbo:protocol name="dubbo" port="20883"/>
+<dubbo:registry address="zookeeper://192.168.188.142:2181"/>
+
+<dubbo:annotation package="com.offcn.page.service.impl"/>-->
+
+    <!-- 配置FreeMarker的配置项-->
+    <bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <!-- 配置模板文件所在目录-->
+        <property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
+        <!-- 配置模板文件编码-->
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+</beans>

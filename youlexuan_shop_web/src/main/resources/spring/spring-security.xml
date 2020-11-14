@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+             xmlns:context="http://www.springframework.org/schema/context"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 针对静态页面和登陆页不拦截-->
+    <http pattern="/css/**" security="none"/>
+    <http pattern="/img/**" security="none"/>
+    <http pattern="/js/**" security="none"/>
+    <http pattern="/plugins/**" security="none"/>
+    <http pattern="/shoplogin.html" security="none"/>
+
+    <!-- 针对注册页面和保存注册信息的方法放行-->
+    <http pattern="/register.html" security="none"/>
+    <http pattern="/seller/add.do" security="none"/>
+
+    <!-- 配置密码加密器对象-->
+    <beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+    <!-- 配置拦截规则-->
+    <http use-expressions="false">
+        <intercept-url pattern="/**" access="ROLE_SELLER"/>
+        <form-login login-page="/shoplogin.html" default-target-url="/admin/index.html" always-use-default-target="true"/>
+        <csrf disabled="true"/>
+        <!-- 允许使用框架-->
+        <headers>
+            <frame-options policy="SAMEORIGIN"></frame-options>
+        </headers>
+        <logout />
+    </http>
+
+
+    <!-- 定义认证管理器-->
+    <authentication-manager>
+        <authentication-provider user-service-ref="userDetailsServiceImpl">
+            <!-- 配置认证的是够启用密码加密器-->
+            <password-encoder ref="bCryptPasswordEncoder"/>
+        </authentication-provider>
+    </authentication-manager>
+
+    <!-- 声明自定义认证类到spring环境-->
+    <context:component-scan base-package="com.offcn.user"/>
+
+
+    <!-- 配置dubbo的远程引用-->
+    <dubbo:application name="youlexuan_shop_web">
+        <dubbo:parameter key="qos.enable" value="false"/>
+    </dubbo:application>
+    <dubbo:registry address="zookeeper://192.168.188.142:2181"/>
+    <dubbo:annotation package="com.offcn.user"/>
+</beans:beans>

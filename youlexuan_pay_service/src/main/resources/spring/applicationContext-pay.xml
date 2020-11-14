@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!-- 临时加载支付属性文件-->
+   <!-- <context:property-placeholder location="classpath*:properties/alipay.properties"/>-->
+    <!-- 创建给支付宝平台发出请求客户端对象-->
+    <bean id="alipayClient" class="com.alipay.api.DefaultAlipayClient">
+        <!-- 请求的支付宝平台网关地址-->
+        <constructor-arg name="serverUrl" value="${serverUrl}"/>
+        <!-- 沙箱应用编号-->
+        <constructor-arg name="appId" value="${appId}"/>
+        <!-- 开发者的私钥-->
+        <constructor-arg name="privateKey" value="${privateKey}"/>
+        <!-- 支付宝的公钥-->
+        <constructor-arg name="alipayPublicKey" value="${alipayPulicKey}"/>
+        <!-- 数据传递格式-->
+        <constructor-arg name="format" value="${format}"/>
+        <!-- 编码-->
+        <constructor-arg name="charset" value="${charset}"/>
+        <!-- 加密方式-->
+        <constructor-arg name="signType" value="${signType}"/>
+    </bean>
+</beans>

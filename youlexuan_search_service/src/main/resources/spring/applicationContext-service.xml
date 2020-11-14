@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!-- 加载属性文件-->
+    <context:property-placeholder location="classpath*:properties/*.properties"/>
+
+    <dubbo:application name="youlexuan_search_service">
+        <dubbo:parameter key="qos.enable" value="false"/>
+    </dubbo:application>
+
+    <!-- 配置广告服务对外调用端口-->
+    <dubbo:protocol name="dubbo" port="20882"/>
+<dubbo:registry address="zookeeper://192.168.188.142:2181"/>
+
+<dubbo:annotation package="com.offcn.search.service.impl"/>
+
+</beans>
